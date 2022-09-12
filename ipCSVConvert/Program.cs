@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 
 namespace ipCSVConvert
 {
@@ -12,6 +9,7 @@ namespace ipCSVConvert
         static void Main(string[] args)
         {
             output.Clear();
+            File.WriteAllText("SavedLists.txt", String.Empty);
 
             try
             {
@@ -23,15 +21,14 @@ namespace ipCSVConvert
                         string[] values = line.Split(',');
 
                         GenerateOutput(values[0], values[1], values[2], values[3], values[4], values[5], values[6]);
+                        File.AppendAllLines("SavedLists.txt", output);
+                        output.Clear();
                     }
-
-                    File.WriteAllLines("SavedLists.txt", output);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Looks like your file was invalid.  Check the directory!");
-
                 Console.WriteLine(ex.ToString());               
             }
         }
@@ -41,8 +38,16 @@ namespace ipCSVConvert
             string IPCounter = baseIP1;
             string thisOutput = String.Empty;
 
-            while (IPCounter != baseIP2)
+            //this is extremely stupid
+            while(true)
             {
+                if (IPCounter == baseIP2)
+                {
+                    thisOutput = $"{IPCounter},{location1},{location2},{lang},{lat},{lng}";
+                    output.Add(thisOutput);
+                    break;
+                }
+
                 thisOutput = $"{IPCounter},{location1},{location2},{lang},{lat},{lng}";
                 output.Add(thisOutput);
                 IPCounter = GetNextIpAddress(IPCounter, 1);
